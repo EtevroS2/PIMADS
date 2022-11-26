@@ -1,0 +1,1101 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+#include <time.h>
+#include <conio.h>
+#include <ctype.h>
+#include <dos.h>
+
+using namespace std;
+FILE *arquivo;
+struct funcionarios
+{
+	char usuario[100];
+	char senha[100];
+	char nome[100];
+	char telefone[100];
+	char endereco[100];
+	char email[100];
+	char ativo;
+};
+
+struct clientes
+{
+	int codigo;
+	char nome[100];
+	char telefone[100];
+	char endereco[100];
+	char email[100];
+	char ativo;
+};
+
+struct produtos
+{
+	int codigo;
+	char descricao[100];
+	char quantidade[100];
+	char preco[100];
+	char ativo;
+};
+
+struct fornecedor
+{
+	int codigo;
+	char nome[100];
+	char telefone[100];
+	char endereco[100];
+	char email[100];
+	char ativo;
+};
+
+ 
+void menuprincipal(); 	// Menu Principal
+void menucadastros();	//Menu Cadastros
+void menurelatorios();	//Menu Relatórios
+void menuvendas();		//Menu Vendas
+void menuestoque();		//Menu Estoque
+void cadfuncionario();		//Cadastrar Funcionario
+void altfuncionario();		//Alterar Funcionario
+void delfuncionario();		//Deletar Funcionario
+void cadclientes();		//Cadastrar Clientes
+void altclientes();		//Alterar Clientes
+void delclientes();		//Deletar Clientes
+void cadprodutos();			//Cadastrar Produtos
+void altprodutos();			//Alterar Proodutos
+void delprodutos();			//Deletar Produtos
+void cadfornecedores();	//Cadastrar Fornecedores
+void altfornecedores();	//Alterar Fornecedores
+void delfornecedores();	//Deletar Fornecedores
+void relvendas();			//Relatório de Vendas
+void relestoques();			//Relatorio de Estoque
+void relclientes();			//Relatório de Clientes
+void relfornecedores();		//Relatório de Fornecedores
+void relfuncionarios();		//Relatório de Funcionariols
+void veorcamento();		//Vendas Orçamento
+void vevendas();		//Vendas
+void recprodutos();			//Receber Produtos
+void qtdprodutos();			//Quantidade de Produtos
+void login();			//Tela de Login
+
+
+void topo()
+{
+	system("cls");
+	cout<<"               --------------------------------------------------------------\n";
+	cout<<"               |                                                            |\n";
+	cout<<"               |                         Morpheus                           |\n";
+	cout<<"               |                                                            |\n";
+	cout<<"               --------------------------------------------------------------\n";
+	cout<<"\n\n";
+	
+}
+void mcadfuncionarios()
+{
+	topo();
+	int menu=0;
+	string login,senha,nomecompleto,telefone,endereco;
+	topo();
+	cout<<"Cadastro de Funcionários\n\n";
+	cout<<"1-Cadastrar Funcionário\n2-Alterar Funcionário\n3-Excluir Funcionário\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			cadfuncionario();
+			break;
+		case 2:
+			altfuncionario();			
+			break;
+		case 3:
+			delfuncionario();
+			break;
+		case 9:
+			menucadastros();
+			break;
+		default:
+			cout<<"Opção inválida!";
+			mcadfuncionarios();
+			break;
+	}
+	
+}
+void mcadclientes()
+{
+	topo();
+	int menu=0;
+	cout<<"Cadastro de Clientes\n\n";
+	cout<<"1-Cadastrar Cliente\n2-Alterar Cliente\n3-Excluir Cliente\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			cadclientes();
+			
+			break;
+		case 2:
+			altclientes();
+			break;
+		case 3:
+			delclientes();
+			break;
+		case 9:
+			menucadastros();
+			break;
+		default:
+			cout<<"Opção inválida!";
+			mcadclientes();
+			break;
+	}
+	
+}
+void mcadprodutos()
+{
+	topo();
+	int menu=0;
+	cout<<"Cadastro de Produtos\n\n";
+	cout<<"1-Cadastrar produto\n2-Alterar produto\n3-Excluir produto\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			cadprodutos();
+			break;
+		case 2:
+			altprodutos();
+			break;
+		case 3:
+			delprodutos();
+			break;
+		case 9:
+			menucadastros();
+			break;
+		default:
+			cout<<"Opção inválida!";
+			mcadprodutos();
+			break;
+	}
+}
+void mcadfornecedores()
+{
+	topo();
+	int menu=0;
+	cout<<"Cadastro de Fornecedores\n\n";
+	cout<<"1-Cadastrar Fornecedor\n2-Alterar Fornecedor\n3-Excluir Fornecedor\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			cadfornecedores();
+			break;
+		case 2:
+			altfornecedores();
+			break;
+		case 3:
+			delfornecedores();
+			break;
+		case 9:
+			menucadastros();
+			break;
+		default:
+			cout<<"Opcão inválida";
+			mcadfornecedores();
+			break;
+	}
+}
+void cadfuncionario()
+{
+	topo();
+	cout<<"Cadastrar Funcionário\n\n";
+	
+	char nome[100],telefone[30],endereco[100],email[100],usuario[100],senha[100],ativo;
+	
+	ofstream arquivo;
+	arquivo.open("funcionarios.txt",ios::app);
+	
+	cout<<"Usuário: ";
+	cin>>usuario;
+	cout<<"Senha: ";
+	cin>>senha;
+	cout<<"Nome: ";
+	cin>>nome;
+	cout<<"Telefone: ";
+	cin>>telefone;
+	cout<<"Endereço: ";
+	cin>>endereco;
+	cout<<"E-mail: ";
+	cin>>email;
+	ativo=1;
+	
+	arquivo<<usuario<<"\t\t"<<senha<<"\t\t"<<nome<<"\t\t"<<telefone<<"\t\t"<<endereco<<"\t\t"<<email<<" \n";
+
+	arquivo.close();
+	
+	cout<<"Funcionario cadastrado com sucesso!\n\n";
+	system("pause");
+	mcadfuncionarios();
+}
+void altfuncionario()
+{
+	topo();
+	cout<<"Alterar cadastro de Funcionários!\n\n\n";
+	
+	
+	arquivo = fopen("funcionarios.txt", "r+b");
+    if (arquivo == NULL)
+    {
+        printf("Arquivo inexistente!");
+        system("pause>nul");
+        system("cls || clear");
+        mcadclientes();
+    }
+    struct funcionarios funcionarios;
+    char usuario[100], encontrado = 0;
+    cout<<"\nDigite o usuario do funcionário que deseja alterar: \n";
+    cin>>usuario;
+    while (fread (&funcionarios, sizeof(funcionarios), 1, arquivo))
+    {
+        if (usuario == funcionarios.usuario)
+        {
+            cout<<"Nome: "<<funcionarios.usuario<<"\nSenha: "<<funcionarios.senha<<"\nNome: "<<funcionarios.nome<<"\nTelefone: "<<funcionarios.telefone<<"\nEndereço: "<<funcionarios.endereco<<"\nE-mail: "<<funcionarios.email;
+            encontrado = 1;
+            fseek(arquivo,sizeof(struct funcionarios)*-1, SEEK_CUR);
+            printf("\nDigite o novo Usuário: \n");
+            fflush(stdin);
+            gets(funcionarios.usuario);
+            printf("\nDigite a nova senha: \n");
+            scanf("%f", &funcionarios.senha);
+            printf("\nDigite o novo Nome: \n");
+            scanf("%f", &funcionarios.nome);
+            printf("\nDigite o novo Telefone: \n");
+            scanf("%f", &funcionarios.telefone);
+            printf("\nDigite o novo Endereço: \n");
+            scanf("%f", &funcionarios.endereco);
+            printf("\nDigite o novo E-mail: \n");
+            scanf("%f", &funcionarios.email);
+            fwrite(&funcionarios, sizeof(funcionarios), 1, arquivo);
+            fseek(arquivo, sizeof(funcionarios)* 0, SEEK_END);
+            printf("\n Dados do funcionário alterados com sucesso!");
+            system("pause>nul");
+            system("cls || clear");
+            mcadfuncionarios();
+        }
+    }
+    if (!encontrado)
+    {
+        printf("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadfuncionarios();
+    }
+    fclose(arquivo);
+	
+}
+void delfuncionario()
+{
+	topo();
+	cout<<"Excluir funcionário\n\n";
+	
+		struct funcionarios funcionarios;
+    int  encontrado = 0;
+    char certeza, usuario[100];
+    printf ("\nDigite o usuario que deseja EXCLUIR: \n");
+    scanf ("%s", &usuario);
+    while (fread (&funcionarios, sizeof(funcionarios), 1, arquivo))
+    {
+        if (usuario == funcionarios.usuario)
+        {
+            cout<<"Usuario: "<<funcionarios.usuario<<"\nNome: "<<funcionarios.nome<<"\nTelefone: "<<funcionarios.telefone<<"\nEndereço: "<<funcionarios.endereco<<"\nE-mail: "<<funcionarios.email;
+            encontrado = 1;
+
+            printf("\nTem certeza que quer excluir este Cliente? s/n \n");
+            fflush(stdin);
+            scanf("%c", &certeza);
+            if (certeza == 's')
+            {
+                funcionarios.ativo = 0;
+                fseek(arquivo,sizeof(struct funcionarios)*-1, SEEK_CUR);
+                fwrite(&funcionarios, sizeof(funcionarios), 1, arquivo);
+                fseek(arquivo, sizeof(funcionarios)* 0, SEEK_END);
+                printf("\nFuncionário excluido com Sucesso! \n");
+                system("pause>nul");
+                system("cls || clear");
+                mcadfuncionarios();
+            }
+            else if (certeza == 'n')
+            {
+                system("cls || clear");
+                mcadfuncionarios();
+            }
+        }
+    }
+    if (!encontrado)
+    {
+        printf ("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadfuncionarios();
+    }
+    fclose(arquivo);
+}
+void cadclientes()
+{
+	
+	topo();
+	cout<<"Cadastro de Clientes!\n\n";
+	
+	int codigo;
+	char nome[100],telefone[30],endereco[100],email[100],ativo;
+	
+	ofstream arquivo;
+	arquivo.open("clientes.txt",ios::app);
+	
+	cout<<"Código: ";
+	cin>>codigo;
+	cout<<"Nome: ";
+	cin>>nome;
+	cout<<"Telefone: ";
+	cin>>telefone;
+	cout<<"Endereço: ";
+	cin>>endereco;
+	cout<<"E-mail: ";
+	cin>>email;
+	ativo=1;
+	
+	arquivo<<codigo<<"\t\t"<<nome<<"\t\t"<<telefone<<"\t\t"<<endereco<<"\t\t"<<email<<" \n";
+
+	arquivo.close();
+	
+	cout<<"Cliente cadastrado com sucesso!\n\n";
+	system("pause");
+	mcadclientes();
+	
+}
+void altclientes()
+{
+	topo();
+	cout<<"Alterar cadastro de cliente!\n\n\n";
+	
+	
+	arquivo = fopen("clientes.txt", "r+b");
+    if (arquivo == NULL)
+    {
+        printf("Arquivo inexistente!");
+        system("pause>nul");
+        system("cls || clear");
+        mcadclientes();
+    }
+    struct clientes clientes;
+    int codigo, encontrado = 0;
+    cout<<"\nDigite o codigo do cliente que deseja alterar: \n";
+    cin>>codigo;
+    while (fread (&clientes, sizeof(clientes), 1, arquivo))
+    {
+        if (codigo == clientes.codigo)
+        {
+            cout<<"Nome: "<<clientes.nome<<"\nTelefone: "<<clientes.telefone<<"\nEndereço: "<<clientes.endereco<<"\nE-mail: "<<clientes.email;
+            encontrado = 1;
+            fseek(arquivo,sizeof(struct clientes)*-1, SEEK_CUR);
+            printf("\nDigite o novo Nome: \n");
+            fflush(stdin);
+            gets(clientes.nome);
+            printf("\nDigite o novo Telefone....: \n");
+            scanf("%f", &clientes.telefone);
+            printf("\nDigite o novo Endereço....: \n");
+            scanf("%f", &clientes.endereco);
+            printf("\nDigite o novo E-mail....: \n");
+            scanf("%f", &clientes.email);
+            fwrite(&clientes, sizeof(clientes), 1, arquivo);
+            fseek(arquivo, sizeof(clientes)* 0, SEEK_END);
+            printf("\n Dados do Cliente alterados com sucesso!");
+            system("pause>nul");
+            system("cls || clear");
+            mcadclientes();
+        }
+    }
+    if (!encontrado)
+    {
+        printf("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadclientes();
+    }
+    fclose(arquivo);
+	
+
+}
+void delclientes()
+{
+	topo();
+	cout<<"Deletar Cliente!";
+	
+	struct clientes clientes;
+    int cod, encontrado = 0;
+    char certeza;
+    printf ("\nDigite o codigo que deseja EXCLUIR: \n");
+    scanf ("%d", &cod);
+    while (fread (&clientes, sizeof(clientes), 1, arquivo))
+    {
+        if (cod == clientes.codigo)
+        {
+            cout<<"Código: "<<clientes.codigo<<"\nNome: "<<clientes.nome<<"\nTelefone: "<<clientes.telefone<<"\nEndereço: "<<clientes.endereco<<"\nE-mail: "<<clientes.email;
+            encontrado = 1;
+
+            printf("\nTem certeza que quer excluir este Cliente? s/n \n");
+            fflush(stdin);
+            scanf("%c", &certeza);
+            if (certeza == 's')
+            {
+                clientes.ativo = 0;
+                fseek(arquivo,sizeof(struct clientes)*-1, SEEK_CUR);
+                fwrite(&clientes, sizeof(clientes), 1, arquivo);
+                fseek(arquivo, sizeof(clientes)* 0, SEEK_END);
+                printf("\nCliente excluido com Sucesso! \n");
+                system("pause>nul");
+                system("cls || clear");
+                mcadclientes();
+            }
+            else if (certeza == 'n')
+            {
+                system("cls || clear");
+                mcadclientes();
+            }
+        }
+    }
+    if (!encontrado)
+    {
+        printf ("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadclientes();
+    }
+    fclose(arquivo);
+}
+void cadprodutos()
+{
+	topo();
+	cout<<"Cadastro de Produtos!\n\n";
+	
+	int codigo,quantidade;
+	char descricao[200],ativo;
+	float preco;
+	
+	ofstream arquivo;
+	arquivo.open("produtos.txt",ios::app);
+	
+	cout<<"Código: ";
+	cin>>codigo;
+	cout<<"Descrição: ";
+	cin>>descricao;
+	cout<<"Quantidade: ";
+	cin>>quantidade;
+	cout<<"Preço: ";
+	cin>>preco;
+	ativo=1;
+	
+	arquivo<<codigo<<"\t"<<descricao<<"\t"<<quantidade<<"\t"<<preco<<"\n";
+
+	arquivo.close();
+	
+	cout<<"Produto cadastrado com sucesso!\n\n";
+	system("pause");
+	mcadprodutos();
+}
+void altprodutos()
+{
+	topo();
+	cout<<"Alterar produtos\n\n";
+		arquivo = fopen("produtos.txt", "r+b");
+    if (arquivo == NULL)
+    {
+        printf("Arquivo inexistente!");
+        system("pause>nul");
+        system("cls || clear");
+        mcadprodutos();
+    }
+    struct produtos produtos;
+    int codigo, encontrado = 0;
+    cout<<"\nDigite o codigo do produto que deseja alterar: \n";
+    cin>>codigo;
+    while (fread (&produtos, sizeof(produtos), 1, arquivo))
+    {
+        if (codigo == produtos.codigo)
+        {
+            cout<<"Codigo: "<<produtos.codigo<<"\nDescrição: "<<produtos.descricao<<"\nQuantidade: "<<produtos.quantidade<<"\nPreço: "<<produtos.preco;
+            encontrado = 1;
+            fseek(arquivo,sizeof(struct produtos)*-1, SEEK_CUR);
+            printf("\nDigite a nova Descrição: \n");
+            fflush(stdin);
+            gets(produtos.descricao);
+            printf("\nDigite a nova Quantidade: \n");
+            scanf("%f", &produtos.quantidade);
+            printf("\nDigite o novo Preço: \n");
+            scanf("%f", &produtos.preco);
+            
+            fwrite(&produtos, sizeof(produtos), 1, arquivo);
+            fseek(arquivo, sizeof(produtos)* 0, SEEK_END);
+            printf("\n Dados do produto alterados com sucesso!");
+            system("pause>nul");
+            system("cls || clear");
+            mcadprodutos();
+        }
+    }
+    if (!encontrado)
+    {
+        printf("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadprodutos();
+    }
+    fclose(arquivo);
+}
+void delprodutos()
+{
+	topo();
+	cout<<"Deletar produto";
+	struct produtos produtos;
+    int cod, encontrado = 0;
+    char certeza;
+    printf ("\nDigite o código do produtos que deseja EXCLUIR: \n");
+    scanf ("%d", &cod);
+    while (fread (&produtos, sizeof(produtos), 1, arquivo))
+    {
+        if (cod == produtos.codigo)
+        {
+            cout<<"Código: "<<produtos.codigo<<"\nDescrição: "<<produtos.descricao<<"\nQuantidade: "<<produtos.quantidade<<"\nPreço: "<<produtos.preco;
+            encontrado = 1;
+
+            printf("\nTem certeza que quer excluir este produto? s/n \n");
+            fflush(stdin);
+            scanf("%c", &certeza);
+            if (certeza == 's')
+            {
+                produtos.ativo = 0;
+                fseek(arquivo,sizeof(struct produtos)*-1, SEEK_CUR);
+                fwrite(&produtos, sizeof(produtos), 1, arquivo);
+                fseek(arquivo, sizeof(produtos)* 0, SEEK_END);
+                printf("\nProduto excluido com Sucesso! \n");
+                system("pause>nul");
+                system("cls || clear");
+                mcadprodutos();
+            }
+            else if (certeza == 'n')
+            {
+                system("cls || clear");
+                mcadprodutos();
+            }
+        }
+    }
+    if (!encontrado)
+    {
+        printf ("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadprodutos();
+    }
+    fclose(arquivo);
+	
+}
+void cadfornecedores()
+{
+	topo();
+	cout<<"Cadastrar Fornecedor\n\n";
+	
+	int codigo;
+	char nome[100],telefone[30],endereco[100],email[100],ativo;
+	
+	ofstream arquivo;
+	arquivo.open("fornecedores.txt",ios::app);
+	
+	cout<<"Código: ";
+	cin>>codigo;
+	cout<<"Nome: ";
+	cin>>nome;
+	cout<<"Telefone: ";
+	cin>>telefone;
+	cout<<"Endereço: ";
+	cin>>endereco;
+	cout<<"E-mail: ";
+	cin>>email;
+	ativo=1;
+	
+	arquivo<<codigo<<"\t"<<nome<<"\t"<<telefone<<"\t"<<endereco<<"\t"<<email<<" \n";
+
+	arquivo.close();
+	
+	cout<<"Fornecedor cadastrado com sucesso!\n\n";
+	system("pause");
+	mcadfornecedores();
+}
+void altfornecedores()
+{
+	topo();
+	cout<<"Alterar Fornecedor\n\n";
+	
+		arquivo = fopen("fornecedores.txt", "r+b");
+    if (arquivo == NULL)
+    {
+        printf("Arquivo inexistente!");
+        system("pause>nul");
+        system("cls || clear");
+        mcadfornecedores();
+    }
+    struct fornecedor fornecedor;
+    int codigo, encontrado = 0;
+    cout<<"\nDigite o codigo do fornecdor que deseja alterar: \n";
+    cin>>codigo;
+    while (fread (&fornecedor, sizeof(fornecedor), 1, arquivo))
+    {
+        if (codigo == fornecedor.codigo)
+        {
+            cout<<"Nome: "<<fornecedor.nome<<"\nTelefone: "<<fornecedor.telefone<<"\nEndereço: "<<fornecedor.endereco<<"\nE-mail: "<<fornecedor.email;
+            encontrado = 1;
+            fseek(arquivo,sizeof(struct fornecedor)*-1, SEEK_CUR);
+            printf("\nDigite o novo Nome: \n");
+            fflush(stdin);
+            gets(fornecedor.nome);
+            printf("\nDigite o novo Telefone: \n");
+            scanf("%f", &fornecedor.telefone);
+            printf("\nDigite o novo Endereço: \n");
+            scanf("%f", &fornecedor.endereco);
+            printf("\nDigite o novo E-mail: \n");
+            scanf("%f", &fornecedor.email);
+            fwrite(&fornecedor, sizeof(fornecedor), 1, arquivo);
+            fseek(arquivo, sizeof(fornecedor)* 0, SEEK_END);
+            printf("\n Dados do fornecedor alterados com sucesso!");
+            system("pause>nul");
+            system("cls || clear");
+            mcadfornecedores();
+        }
+    }
+    if (!encontrado)
+    {
+        printf("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadfornecedores();
+    }
+    fclose(arquivo);
+}
+void delfornecedores()
+{
+	topo();
+	cout<<"Deletar Fornecedor\n\n";
+	struct fornecedor fornecedor;
+    int cod, encontrado = 0;
+    char certeza;
+    printf ("\nDigite o codigo que deseja EXCLUIR: \n");
+    scanf ("%d", &cod);
+    while (fread (&fornecedor, sizeof(fornecedor), 1, arquivo))
+    {
+        if (cod == fornecedor.codigo)
+        {
+            cout<<"Código: "<<fornecedor.codigo<<"\nNome: "<<fornecedor.nome<<"\nTelefone: "<<fornecedor.telefone<<"\nEndereço: "<<fornecedor.endereco<<"\nE-mail: "<<fornecedor.email;
+            encontrado = 1;
+
+            printf("\nTem certeza que quer excluir este Cliente? s/n \n");
+            fflush(stdin);
+            scanf("%c", &certeza);
+            if (certeza == 's')
+            {
+                fornecedor.ativo = 0;
+                fseek(arquivo,sizeof(struct fornecedor)*-1, SEEK_CUR);
+                fwrite(&fornecedor, sizeof(fornecedor), 1, arquivo);
+                fseek(arquivo, sizeof(fornecedor)* 0, SEEK_END);
+                printf("\nFornecedor excluido com Sucesso! \n");
+                system("pause>nul");
+                system("cls || clear");
+                mcadfornecedores();
+            }
+            else if (certeza == 'n')
+            {
+                system("cls || clear");
+                mcadfornecedores();
+            }
+        }
+    }
+    if (!encontrado)
+    {
+        printf ("\nCodigo nao cadastrado!!\n");
+        system("pause>nul");
+        system("cls || clear");
+        mcadfornecedores();
+    }
+    fclose(arquivo);
+}
+void relvendas()
+{
+	topo();
+	cout<<"Vendas\n\n";
+	
+	string temp;
+	cout<<"Relatório de Vendas\n\n";
+	cout<<"Código \\ Cliente \\ Valor\n";
+
+	ifstream arquivo("vendas.txt",ios::in);
+	while(getline(arquivo,temp))
+	{
+		cout<<temp<<endl;
+	}
+	arquivo.close();
+	system("pause");
+	menurelatorios();
+}
+void relestoque()
+{
+	topo();
+	cout<<"Relatório de Estoque\n\n";
+	string temp;
+	
+	cout<<"Codigo \\ Descrição \\ Quantidade \\ Preço\n\n";
+
+	ifstream arquivo("produtos.txt",ios::in);
+	while(getline(arquivo,temp))
+	{
+		cout<<temp<<endl;
+	}
+	arquivo.close();
+	system("pause");
+	menurelatorios();
+}
+void relclientes()
+{
+	topo();
+	cout<<"Relatório de Clientes\n\n";
+	
+	string temp;
+	cout<<"Relatório de Clientes\n\n";
+	cout<<"Codigo \\ Nome \\ Telefone \\ Endereço \\ E-mail\n\n";
+
+	ifstream arquivo("clientes.txt",ios::in);
+	while(getline(arquivo,temp))
+	{
+		cout<<temp<<endl;
+	}
+	arquivo.close();
+	system("pause");
+	menurelatorios();
+}
+void relfornecedores()
+{
+	topo();
+	cout<<"Relatório de Fornecedres\n\n";
+	
+	string temp;
+	
+	cout<<"Codigo \\ Nome \\ Telefone \\ Endereço \\ E-mail\n\n";
+
+	ifstream arquivo("fornecedores.txt",ios::in);
+	while(getline(arquivo,temp))
+	{
+		cout<<temp<<endl;
+	}
+	arquivo.close();
+	system("pause");
+	menurelatorios();
+}
+void relfuncionarios()
+{
+	topo();
+	string temp;
+	cout<<"Relatório de Funcionários\n\n";
+	cout<<"Usuario\t\tSenha\t\tNome\t\tTelefone\t\tEndereço\tE-mail\n";
+
+	ifstream arquivo("funcionarios.txt",ios::in);
+	while(getline(arquivo,temp))
+	{
+		cout<<temp<<endl;
+	}
+	arquivo.close();
+	system("pause");
+	menurelatorios();
+	
+}
+void veorcamento()
+{
+	topo();
+	cout<<"Vendas\n\n";
+	
+	topo();
+	cout<<"Registrar Orçamento\n\n";
+	
+	int codigo;
+	char cliente[100],produto[30],quantidade[100];
+	float valor;
+	
+	ofstream arquivo;
+	arquivo.open("orcamento.txt",ios::app);
+	
+	cout<<"Código: ";
+	cin>>codigo;
+	cout<<"Nome do Cliente: ";
+	cin>>cliente;
+	cout<<"Produto: ";
+	cin>>produto;
+	cout<<"Quantidade: ";
+	cin>>quantidade;
+	cout<<"Valor total: ";
+	cin>>valor;
+	
+	
+	
+	arquivo<<codigo<<"\t"<<cliente<<"\t"<<produto<<"\t"<<quantidade<<"\t"<<valor<<" \n";
+
+	arquivo.close();
+	
+	cout<<"Orçamento cadastrado com sucesso!\n\n";
+	if (valor >599)
+	{
+		cout<<"O cliente tem Frete Gratis!\n";
+	}
+	system("pause");
+	menuvendas();
+	
+}
+void vevendas()
+{
+	topo();
+	cout<<"Vendas\n\n";
+	
+	topo();
+	cout<<"Registrar Venda\n\n";
+	
+	int codigo;
+	char cliente[100],produto[30],quantidade[100];
+	float valor;
+	
+	ofstream arquivo;
+	arquivo.open("vendas.txt",ios::app);
+	
+	cout<<"Código: ";
+	cin>>codigo;
+	cout<<"Nome do Cliente: ";
+	cin>>cliente;
+	cout<<"Produto: ";
+	cin>>produto;
+	cout<<"Quantidade: ";
+	cin>>quantidade;
+	cout<<"Valor total: ";
+	cin>>valor;
+	
+	
+	
+	arquivo<<codigo<<"\t"<<cliente<<"\t"<<produto<<"\t"<<quantidade<<"\t"<<valor<<" \n";
+
+	arquivo.close();
+	
+	cout<<"Venda cadastrado com sucesso!\n\n";
+	if (valor >599)
+	{
+		cout<<"O cliente tem Frete Gratis!\n";
+	}
+	system("pause");
+	menuvendas();
+	
+}
+void recprodutos()
+{
+	topo();
+	cout<<"Receber Produtos";
+}
+void qtdprodutos()
+{
+	topo();
+	cout<<"Alterar Quantidade do Produto";
+}
+void menucadastros()
+{
+	int menu=0;
+	
+	topo();
+	cout<<"Menu Cadastros\n\n";
+	cout<<"1-Funcionários\n2-Clientes\n3-Produtos\n4-Fornecedores\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			mcadfuncionarios();
+			break;
+		case 2:
+			mcadclientes();
+			break;
+		case 3:
+			mcadprodutos();
+			break;
+		case 4:
+			mcadfornecedores();
+			break;
+		case 9:
+			menuprincipal();
+			break;
+		default:
+			cout<<"\n\nOpção inválida!";
+			menucadastros();
+			break;
+	}
+	
+
+}
+
+void menurelatorios()
+{
+	int menu=0;
+	
+	topo();
+	cout<<"Menu Relatórios\n\n";
+	cout<<"1-Vendas\n2-Estoque\n3-Clientes\n4-Fornecedores\n5-Funcionários\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			relvendas();
+			break;
+		case 2:
+			relestoque();
+			break;
+		case 3:
+			relclientes();
+			break;
+		case 4:
+			relfornecedores();
+			break;
+		case 5:
+			relfuncionarios();
+			break;
+		case 9:
+			menuprincipal();
+			break;
+		default:
+			cout<<"Opção inválida";
+			menurelatorios();
+			break;
+	}
+	
+}
+void menuvendas()
+{
+	int menu=0;
+	
+	topo();
+	cout<<"Menu Vendas\n\n";
+	cout<<"1-Orçamentos\n2-Vendas\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			veorcamento();
+			break;
+		case 2:
+			vevendas();
+			break;
+		case 9:
+			menuprincipal();
+			break;
+		default:
+			cout<<"Opção inválida";
+			menuvendas();
+			break;
+	}
+}
+void menuestoque()
+{
+	int menu=0;
+	
+	topo();
+	cout<<"Menu Estoque\n";
+	cout<<"1-Listar Produtos\n2-Receber Produtos\n3-Alterar Quantidade\n9-Voltar\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			relestoque();
+			break;
+		case 2:
+			recprodutos();
+			break;
+		case 3:
+			qtdprodutos();
+			break;
+		case 9:
+			menuprincipal();
+			break;
+		default:
+			menuestoque();
+			break;	
+	}
+
+}
+
+void menuprincipal()
+{
+	int menu=0;
+	
+	// Tela apos a login
+	
+	topo();
+	cout<<"1-Cadastros\n2-Relatorios\n3-Vendas\n";
+	cin>>menu;
+	
+	switch(menu)
+	{
+		case 1:
+			menucadastros();
+			break;
+		case 2:
+			menurelatorios();
+			break;
+		case 3:
+			menuvendas();
+			break;		
+		//case 4:
+		//	menuestoque();
+			//break;
+		default:
+			cout<<"Opção não encontrada!";
+			system("pause");
+			menuprincipal();
+			break;
+	}
+}
+void login()
+{
+	topo();
+	string user,senha;
+	cout<<"Login: ";
+	cin>>user;
+	cout<<"Senha: ";
+	cin>>senha;
+	
+	if(user=="admin" || senha=="admin")
+	{
+		menuprincipal();
+	}
+	else
+	{
+		cout<<"Usuário ou Senha incorretos!\nTente Novamente!\n";
+		system("pause");
+		system("cls");
+		login();
+	}
+}
+
+int main(int argc, char** argv)
+{
+	setlocale(LC_ALL,"portuguese");
+	
+	login();
+	
+	
+	return 0;
+}
